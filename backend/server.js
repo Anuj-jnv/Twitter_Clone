@@ -1,8 +1,12 @@
 import express from "express"
-import authRoutes from "./routes/auth.routes.js";
 import dotenv from "dotenv";
-import connectDB from "./db/connectMongoDb.js";
 import cookieParser from "cookie-parser";
+
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.route.js";
+import {v2 as cloudinary} from 'cloudinary';
+
+import connectDB from "./db/connectMongoDb.js";
 
 dotenv.config();
 connectDB();
@@ -16,9 +20,17 @@ app.use(cookieParser());
 
 const port=process.env.PORT || 8080;
 
+          
+cloudinary.config({ 
+  cloud_name: 'dyqa7ohun', 
+  api_key: '355914692581717', 
+  api_secret: 'lxkrIxmNU4CXEYqnDpKq7kL-UDM' 
+});
+
 
 
 app.use("/api/auth",authRoutes);
+app.use("/api/users",userRoutes);
 
 
 
