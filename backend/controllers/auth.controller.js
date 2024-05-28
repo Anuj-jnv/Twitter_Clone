@@ -6,10 +6,6 @@ export const signup = async (req, res) => {
 	try {
 		const { fullName, username, email, password } = req.body;
 
-        if (!fullName || !email || !password) {
-            return res.status(400).json({ error: 'Please provide fullName, email, and password' });
-        }
-
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
 			return res.status(400).json({ error: "Invalid email format" });
@@ -99,6 +95,7 @@ export const logout = async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
+
 export const getMe = async (req, res) => {
 	try {
 		const user = await User.findById(req.user._id).select("-password");
