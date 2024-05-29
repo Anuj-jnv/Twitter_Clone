@@ -7,7 +7,7 @@ export const createPost = async (req, res) => {
 	try {
 		const { text } = req.body;
 		let { img } = req.body;
-		const userId = req.user._id.toString();
+		const userId = req.user?._id.toString();
 
 		const user = await User.findById(userId);
 		if (!user) return res.status(404).json({ message: "User not found" });
@@ -42,7 +42,7 @@ export const deletePost = async (req, res) => {
 			return res.status(404).json({ error: "Post not found" });
 		}
 
-		if (post.user.toString() !== req.user._id.toString()) {
+		if (post.user.toString() !== req.user?._id.toString()) {
 			return res.status(401).json({ error: "You are not authorized to delete this post" });
 		}
 
@@ -64,7 +64,7 @@ export const commentOnPost = async (req, res) => {
 	try {
 		const { text } = req.body;
 		const postId = req.params.id;
-		const userId = req.user._id;
+		const userId = req.user?._id;
 
 		if (!text) {
 			return res.status(400).json({ error: "Text field is required" });
@@ -89,7 +89,7 @@ export const commentOnPost = async (req, res) => {
 
 export const likeUnlikePost = async (req, res) => {
 	try {
-		const userId = req.user._id;
+		const userId = req.user?._id;
 		const { id: postId } = req.params;
 
 		const post = await Post.findById(postId);
@@ -179,7 +179,7 @@ export const getLikedPosts = async (req, res) => {
 
 export const getFollowingPosts = async (req, res) => {
 	try {
-		const userId = req.user._id;
+		const userId = req.user?._id;
 		const user = await User.findById(userId);
 		if (!user) return res.status(404).json({ error: "User not found" });
 
@@ -210,7 +210,7 @@ export const getUserPosts = async (req, res) => {
 		const user = await User.findOne({ username });
 		if (!user) return res.status(404).json({ error: "User not found" });
 
-		const posts = await Post.find({ user: user._id })
+		const posts = await Post.find({ user: user?._id })
 			.sort({ createdAt: -1 })
 			.populate({
 				path: "user",

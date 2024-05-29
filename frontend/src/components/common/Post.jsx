@@ -16,16 +16,16 @@ const Post = ({ post }) => {
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 	const postOwner = post.user;
-	const isLiked = post.likes.includes(authUser._id);
+	const isLiked = post.likes.includes(authUser?._id);
 
-	const isMyPost = authUser._id === post.user._id;
+	const isMyPost = authUser?._id === post.user?._id;
 
 	const formattedDate = formatPostDate(post.createdAt);
 
 	const { mutate: deletePost, isPending: isDeleting } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/${post._id}`, {
+				const res = await fetch(`/api/posts/${post?._id}`, {
 					method: "DELETE",
 				});
 				const data = await res.json();
@@ -47,7 +47,7 @@ const Post = ({ post }) => {
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/like/${post._id}`, {
+				const res = await fetch(`/api/posts/like/${post?._id}`, {
 					method: "POST",
 				});
 				const data = await res.json();
@@ -66,7 +66,7 @@ const Post = ({ post }) => {
 			// instead, update the cache directly for that post
 			queryClient.setQueryData(["posts"], (oldData) => {
 				return oldData.map((p) => {
-					if (p._id === post._id) {
+					if (p?._id === post?._id) {
 						return { ...p, likes: updatedLikes };
 					}
 					return p;
@@ -81,7 +81,7 @@ const Post = ({ post }) => {
 	const { mutate: commentPost, isPending: isCommenting } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/comment/${post._id}`, {
+				const res = await fetch(`/api/posts/comment/${post?._id}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
