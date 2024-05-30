@@ -46,7 +46,7 @@ const RightPanel = () => {
 							<Link
 								to={`/profile/${user.username}`}
 								className='flex items-center justify-between gap-4'
-								key={user._id}
+								key={user?._id}
 							>
 								<div className='flex gap-2 items-center'>
 									<div className='avatar'>
@@ -66,7 +66,7 @@ const RightPanel = () => {
 										className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
 										onClick={(e) => {
 											e.preventDefault();
-											follow(user._id);
+											follow(user?._id);
 										}}
 									>
 										{isPending ? <LoadingSpinner size='sm' /> : "Follow"}
