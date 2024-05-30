@@ -32,6 +32,8 @@ const Sidebar = () => {
 			toast.error("Logout failed");
 		},
 	});
+	if(!data) return res.status(400).json({message : "data not found"})
+		
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
 	return (

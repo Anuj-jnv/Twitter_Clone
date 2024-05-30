@@ -10,6 +10,8 @@ const CreatePost = () => {
 	const [img, setImg] = useState(null);
 	const imgRef = useRef(null);
 
+	if(!data) return res.status(400).json({message : "data not found"})
+
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 
