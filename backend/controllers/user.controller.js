@@ -114,7 +114,7 @@ export const updateUser = async (req, res) => {
 		}
 
 		if (profileImg) {
-			if (user.profileImg) {
+			if (user?.profileImg) {
 				// https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
 				await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]);
 			}
@@ -137,7 +137,7 @@ export const updateUser = async (req, res) => {
 		user.username = username || user.username;
 		user.bio = bio || user.bio;
 		user.link = link || user.link;
-		user.profileImg = profileImg || user.profileImg;
+		user?.profileImg = profileImg || user?.profileImg;
 		user.coverImg = coverImg || user.coverImg;
 
 		user = await user.save();
