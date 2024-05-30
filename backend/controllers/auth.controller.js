@@ -36,11 +36,11 @@ export const signup = async (req, res) => {
 		});
 
 		if (newUser) {
-			generateTokenAndSetCookie(newUser._id, res);
+			generateTokenAndSetCookie(newUser?._id, res);
 			await newUser.save();
 
 			res.status(201).json({
-				_id: newUser._id,
+				_id: newUser?._id,
 				fullName: newUser.fullName,
 				username: newUser.username,
 				email: newUser.email,
@@ -68,10 +68,10 @@ export const login = async (req, res) => {
 			return res.status(400).json({ error: "Invalid username or password" });
 		}
 
-		generateTokenAndSetCookie(user._id, res);
+		generateTokenAndSetCookie(user?._id, res);
 
 		res.status(200).json({
-			_id: user._id,
+			_id: user?._id,
 			fullName: user.fullName,
 			username: user.username,
 			email: user.email,
@@ -98,7 +98,7 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
 	try {
-		const user = await User.findById(req.user._id).select("-password");
+		const user = await User.findById(req.user?._id).select("-password");
 		res.status(200).json(user);
 	} catch (error) {
 		console.log("Error in getMe controller", error.message);
