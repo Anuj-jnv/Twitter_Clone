@@ -23,9 +23,9 @@ export const followUnfollowUser = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const userToModify = await User.findById(id);
-		const currentUser = await User.findById(req.user?._id);
+		const currentUser = await User.findById(req.user._id);
 
-		if (id === req.user?._id.toString()) {
+		if (id === req.user._id.toString()) {
 			return res.status(400).json({ error: "You can't follow/unfollow yourself" });
 		}
 
@@ -35,19 +35,19 @@ export const followUnfollowUser = async (req, res) => {
 
 		if (isFollowing) {
 			// Unfollow the user
-			await User.findByIdAndUpdate(id, { $pull: { followers: req.user?._id } });
-			await User.findByIdAndUpdate(req.user?._id, { $pull: { following: id } });
+			await User.findByIdAndUpdate(id, { $pull: { followers: req.user._id } });
+			await User.findByIdAndUpdate(req.user._id, { $pull: { following: id } });
 
 			res.status(200).json({ message: "User unfollowed successfully" });
 		} else {
 			// Follow the user
-			await User.findByIdAndUpdate(id, { $push: { followers: req.user?._id } });
-			await User.findByIdAndUpdate(req.user?._id, { $push: { following: id } });
+			await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } });
+			await User.findByIdAndUpdate(req.user._id, { $push: { following: id } });
 			// Send notification to the user
 			const newNotification = new Notification({
 				type: "follow",
-				from: req.user?._id,
-				to: userToModify?._id,
+				from: req.user._id,
+				to: userToModify._id,
 			});
 
 			await newNotification.save();
@@ -62,7 +62,7 @@ export const followUnfollowUser = async (req, res) => {
 
 export const getSuggestedUsers = async (req, res) => {
 	try {
-		const userId = req.user?._id;
+		const userId = req.user._id;
 
 		const usersFollowedByMe = await User.findById(userId).select("following");
 
@@ -92,7 +92,7 @@ export const updateUser = async (req, res) => {
 	const { fullName, email, username, currentPassword, newPassword, bio, link } = req.body;
 	let { profileImg, coverImg } = req.body;
 
-	const userId = req.user?._id;
+	const userId = req.user._id;
 
 	try {
 		let user = await User.findById(userId);
@@ -114,18 +114,14 @@ export const updateUser = async (req, res) => {
 		}
 
 		if (profileImg) {
-			if (user?.profileImg) {
+			if (user.profileImg) {
 				// https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
-				await cloudinary.uploader.destroy(user?.profileImg.split("/").pop().split(".")[0]);
+				await cloudinary.uploader.destroy(user.profileImg.split("/").pop().split(".")[0]);
 			}
 
 			const uploadedResponse = await cloudinary.uploader.upload(profileImg);
 			profileImg = uploadedResponse.secure_url;
 		}
-		else{
-			res.status(400).json({message : "Profile image not found"})
-		}
-		
 
 		if (coverImg) {
 			if (user.coverImg) {
@@ -138,10 +134,10 @@ export const updateUser = async (req, res) => {
 
 		user.fullName = fullName || user.fullName;
 		user.email = email || user.email;
-		user.username = username || user?.username;
+		user.username = username || user.username;
 		user.bio = bio || user.bio;
 		user.link = link || user.link;
-		user.profileImg = profileImg || user?.profileImg;
+		user.profileImg = profileImg || user.profileImg;
 		user.coverImg = coverImg || user.coverImg;
 
 		user = await user.save();

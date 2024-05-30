@@ -6,11 +6,6 @@ export const signup = async (req, res) => {
 	try {
 		const { fullName, username, email, password } = req.body;
 
-		if (!fullName || !username || !email || !password) {
-			return res.status(400).json({ error: "Please fill all the field" });
-		  }
-		
-
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
 			return res.status(400).json({ error: "Invalid email format" });
@@ -39,20 +34,19 @@ export const signup = async (req, res) => {
 			email,
 			password: hashedPassword,
 		});
-		
 
 		if (newUser) {
-			generateTokenAndSetCookie(newUser?._id, res);
+			generateTokenAndSetCookie(newUser._id, res);
 			await newUser.save();
 
 			res.status(201).json({
-				_id: newUser?._id,
+				_id: newUser._id,
 				fullName: newUser.fullName,
-				username: newUser?.username,
+				username: newUser.username,
 				email: newUser.email,
 				followers: newUser.followers,
 				following: newUser.following,
-				profileImg: newUser?.profileImg,
+				profileImg: newUser.profileImg,
 				coverImg: newUser.coverImg,
 			});
 		} else {
@@ -74,16 +68,16 @@ export const login = async (req, res) => {
 			return res.status(400).json({ error: "Invalid username or password" });
 		}
 
-		generateTokenAndSetCookie(user?._id, res);
+		generateTokenAndSetCookie(user._id, res);
 
 		res.status(200).json({
-			_id: user?._id,
+			_id: user._id,
 			fullName: user.fullName,
-			username: user?.username,
+			username: user.username,
 			email: user.email,
 			followers: user.followers,
 			following: user.following,
-			profileImg: user?.profileImg,
+			profileImg: user.profileImg,
 			coverImg: user.coverImg,
 		});
 	} catch (error) {
@@ -104,7 +98,7 @@ export const logout = async (req, res) => {
 
 export const getMe = async (req, res) => {
 	try {
-		const user = await User.findById(req.user?._id).select("-password");
+		const user = await User.findById(req.user._id).select("-password");
 		res.status(200).json(user);
 	} catch (error) {
 		console.log("Error in getMe controller", error.message);

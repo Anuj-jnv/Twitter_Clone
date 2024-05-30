@@ -9,23 +9,23 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
 import LoadingSpinner from "./LoadingSpinner";
-import { formatPostDate } from "../../utils/date/index";
+import { formatPostDate } from "../../utils/date";
 
 const Post = ({ post }) => {
 	const [comment, setComment] = useState("");
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 	const postOwner = post.user;
-	const isLiked = post.likes.includes(authUser?._id);
+	const isLiked = post.likes.includes(authUser._id);
 
-	const isMyPost = authUser?._id === post.user?._id;
+	const isMyPost = authUser._id === post.user._id;
 
 	const formattedDate = formatPostDate(post.createdAt);
 
 	const { mutate: deletePost, isPending: isDeleting } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/${post?._id}`, {
+				const res = await fetch(`/api/posts/${post._id}`, {
 					method: "DELETE",
 				});
 				const data = await res.json();
@@ -47,7 +47,7 @@ const Post = ({ post }) => {
 	const { mutate: likePost, isPending: isLiking } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/like/${post?._id}`, {
+				const res = await fetch(`/api/posts/like/${post._id}`, {
 					method: "POST",
 				});
 				const data = await res.json();
@@ -66,7 +66,7 @@ const Post = ({ post }) => {
 			// instead, update the cache directly for that post
 			queryClient.setQueryData(["posts"], (oldData) => {
 				return oldData.map((p) => {
-					if (p?._id === post?._id) {
+					if (p._id === post._id) {
 						return { ...p, likes: updatedLikes };
 					}
 					return p;
@@ -81,7 +81,7 @@ const Post = ({ post }) => {
 	const { mutate: commentPost, isPending: isCommenting } = useMutation({
 		mutationFn: async () => {
 			try {
-				const res = await fetch(`/api/posts/comment/${post?._id}`, {
+				const res = await fetch(`/api/posts/comment/${post._id}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -127,17 +127,17 @@ const Post = ({ post }) => {
 		<>
 			<div className='flex gap-2 items-start p-4 border-b border-gray-700'>
 				<div className='avatar'>
-					<Link to={`/profile/${postOwner?.username}`} className='w-8 rounded-full overflow-hidden'>
-						<img src={postOwner?.profileImg || "/avatar-placeholder.png"} />
+					<Link to={`/profile/${postOwner.username}`} className='w-8 rounded-full overflow-hidden'>
+						<img src={postOwner.profileImg || "/avatar-placeholder.png"} />
 					</Link>
 				</div>
 				<div className='flex flex-col flex-1'>
 					<div className='flex gap-2 items-center'>
-						<Link to={`/profile/${postOwner?.username}`} className='font-bold'>
+						<Link to={`/profile/${postOwner.username}`} className='font-bold'>
 							{postOwner.fullName}
 						</Link>
 						<span className='text-gray-700 flex gap-1 text-sm'>
-							<Link to={`/profile/${postOwner?.username}`}>@{postOwner?.username}</Link>
+							<Link to={`/profile/${postOwner.username}`}>@{postOwner.username}</Link>
 							<span>·</span>
 							<span>{formattedDate}</span>
 						</span>
@@ -173,7 +173,7 @@ const Post = ({ post }) => {
 								</span>
 							</div>
 							{/* We're using Modal Component from DaisyUI */}
-							<dialog id={`comments_modal${post?._id}`} className='modal border-none outline-none'>
+							<dialog id={`comments_modal${post._id}`} className='modal border-none outline-none'>
 								<div className='modal-box rounded border border-gray-600'>
 									<h3 className='font-bold text-lg mb-4'>COMMENTS</h3>
 									<div className='flex flex-col gap-3 max-h-60 overflow-auto'>
@@ -187,7 +187,7 @@ const Post = ({ post }) => {
 												<div className='avatar'>
 													<div className='w-8 rounded-full'>
 														<img
-															src={comment.user?.profileImg || "/avatar-placeholder.png"}
+															src={comment.user.profileImg || "/avatar-placeholder.png"}
 														/>
 													</div>
 												</div>
@@ -195,7 +195,7 @@ const Post = ({ post }) => {
 													<div className='flex items-center gap-1'>
 														<span className='font-bold'>{comment.user.fullName}</span>
 														<span className='text-gray-700 text-sm'>
-															@{comment.user?.username}
+															@{comment.user.username}
 														</span>
 													</div>
 													<div className='text-sm'>{comment.text}</div>

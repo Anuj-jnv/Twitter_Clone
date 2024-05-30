@@ -10,8 +10,6 @@ const CreatePost = () => {
 	const [img, setImg] = useState(null);
 	const imgRef = useRef(null);
 
-	if(!data) return res.status(400).json({message : "data not found"})
-
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
 
@@ -68,7 +66,7 @@ const CreatePost = () => {
 		<div className='flex p-4 items-start gap-4 border-b border-gray-700'>
 			<div className='avatar'>
 				<div className='w-8 rounded-full'>
-					<img src={authUser?.profileImg || "/avatar-placeholder.png"} />
+					<img src={authUser.profileImg || "/avatar-placeholder.png"} />
 				</div>
 			</div>
 			<form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>

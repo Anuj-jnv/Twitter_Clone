@@ -88,7 +88,7 @@ const SignUpPage = () => {
 								placeholder='Username'
 								name='username'
 								onChange={handleInputChange}
-								value={formData?.username}
+								value={formData.username}
 							/>
 						</label>
 						<label className='input input-bordered rounded flex items-center gap-2 flex-1'>

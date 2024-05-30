@@ -72,7 +72,7 @@ const LoginPage = () => {
 							placeholder='username'
 							name='username'
 							onChange={handleInputChange}
-							value={formData?.username}
+							value={formData.username}
 						/>
 					</label>
 
